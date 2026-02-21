@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# runtime decision state (regenerated on first run)
+src/data/decisions-state.json
+
+# QA test artifacts
+UW-Decisions-QA-Test-Report.docx
+uw-decisions-export-*.json
+uw-decisions-export-*.md
