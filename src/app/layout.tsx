@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { loadState } from "@/lib/persistence";
+import { isAuthenticated } from "@/lib/auth";
 import { DECISIONS, CATEGORIES } from "@/lib/decisions-data";
 import "./globals.css";
 
@@ -17,9 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UW Decisions — Stakeholder Portal",
+  title: "InsureWright Onboarding — Stakeholder Portal",
   description:
-    "Underwriting Agent stakeholder decision portal. Define appetite rules, data requirements, workflows, and more.",
+    "InsureWright Onboarding stakeholder decision portal. Define appetite rules, data requirements, workflows, and more.",
 };
 
 export default async function RootLayout({
@@ -27,6 +28,21 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const authed = await isAuthenticated();
+
+  if (!authed) {
+    return (
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          {children}
+          <Toaster />
+        </body>
+      </html>
+    );
+  }
+
   const state = await loadState();
 
   // Compute per-category counts

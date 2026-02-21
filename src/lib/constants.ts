@@ -30,6 +30,6 @@ export const STATUS_CONFIG: Record<
   },
 };
 
-export const APP_NAME = "UW Decisions";
+export const APP_NAME = "InsureWright Onboarding";
 export const APP_DESCRIPTION =
-  "Stakeholder decision portal for the Underwriting Agent";
+  "Stakeholder onboarding portal for underwriting decisions";

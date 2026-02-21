@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useTransition } from "react";
 import {
   ShieldCheck,
   Layers,
@@ -15,10 +16,12 @@ import {
   Target,
   Download,
   Activity,
+  LogOut,
 } from "lucide-react";
 import { CATEGORIES } from "@/lib/decisions-data";
 import { DecisionState } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { logout } from "@/lib/auth";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   ShieldCheck,
@@ -40,6 +43,8 @@ interface AppSidebarProps {
 
 export function AppSidebar({ decisions, categoryCounts }: AppSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isLoggingOut, startTransition] = useTransition();
 
   // Count flagged items
   const totalFlagged = Object.values(decisions).filter(
@@ -55,9 +60,9 @@ export function AppSidebar({ decisions, categoryCounts }: AppSidebarProps) {
             <ShieldCheck className="w-4 h-4 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="font-semibold text-sm">UW Decisions</h1>
+            <h1 className="font-semibold text-sm">InsureWright</h1>
             <p className="text-[10px] text-muted-foreground">
-              Stakeholder Portal
+              Onboarding Portal
             </p>
           </div>
         </Link>
@@ -150,7 +155,21 @@ export function AppSidebar({ decisions, categoryCounts }: AppSidebarProps) {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-border">
+      <div className="p-4 border-t border-border space-y-2">
+        <button
+          onClick={() => {
+            startTransition(async () => {
+              await logout();
+              router.push("/login");
+              router.refresh();
+            });
+          }}
+          disabled={isLoggingOut}
+          className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md text-xs text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          {isLoggingOut ? "Signing out..." : "Sign Out"}
+        </button>
         <p className="text-[10px] text-muted-foreground text-center">
           Built for Neil by the Product Team
         </p>
