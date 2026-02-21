@@ -25,8 +25,8 @@ export function FileUploadInput({ placeholder, disabled }: FileUploadInputProps)
         <p className="text-xs text-muted-foreground mt-2 italic">{placeholder}</p>
       )}
       <p className="text-xs text-amber-600 mt-3">
-        File upload will be available after Vercel deployment. For now, describe
-        what you&apos;d upload in the notes field below, or email files directly.
+        File upload is not yet enabled. Please use the notes field below to
+        describe what you&apos;d upload, or email files directly to the team.
       </p>
     </div>
   );

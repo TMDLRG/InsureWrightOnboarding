@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, FileJson, Download } from "lucide-react";
+import { FileText, FileJson, Download, Check } from "lucide-react";
 import { toast } from "sonner";
 
 interface ExportButtonsProps {
@@ -10,6 +11,9 @@ interface ExportButtonsProps {
 }
 
 export function ExportButtons({ exportData }: ExportButtonsProps) {
+  const [jsonDownloaded, setJsonDownloaded] = useState(false);
+  const [mdDownloaded, setMdDownloaded] = useState(false);
+
   const downloadJSON = () => {
     const blob = new Blob([exportData], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -18,7 +22,9 @@ export function ExportButtons({ exportData }: ExportButtonsProps) {
     a.download = `insurewright-onboarding-export-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("JSON export downloaded");
+    setJsonDownloaded(true);
+    toast.success("JSON export downloaded successfully");
+    setTimeout(() => setJsonDownloaded(false), 3000);
   };
 
   const downloadMarkdown = () => {
@@ -84,7 +90,9 @@ export function ExportButtons({ exportData }: ExportButtonsProps) {
     a.download = `insurewright-onboarding-export-${new Date().toISOString().slice(0, 10)}.md`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("Markdown export downloaded");
+    setMdDownloaded(true);
+    toast.success("Markdown export downloaded successfully");
+    setTimeout(() => setMdDownloaded(false), 3000);
   };
 
   return (
@@ -101,9 +109,22 @@ export function ExportButtons({ exportData }: ExportButtonsProps) {
             Formatted markdown document with all decisions, answers, and notes.
             Easy to read and share.
           </p>
-          <Button size="sm" variant="outline" onClick={downloadMarkdown}>
-            <Download className="w-3.5 h-3.5 mr-1.5" />
-            Download .md
+          <Button
+            size="sm"
+            variant={mdDownloaded ? "default" : "outline"}
+            onClick={downloadMarkdown}
+          >
+            {mdDownloaded ? (
+              <>
+                <Check className="w-3.5 h-3.5 mr-1.5" />
+                Downloaded!
+              </>
+            ) : (
+              <>
+                <Download className="w-3.5 h-3.5 mr-1.5" />
+                Download .md
+              </>
+            )}
           </Button>
         </CardContent>
       </Card>
@@ -120,9 +141,22 @@ export function ExportButtons({ exportData }: ExportButtonsProps) {
             Machine-readable format for the development team. Structured data
             ready to import into the build pipeline.
           </p>
-          <Button size="sm" variant="outline" onClick={downloadJSON}>
-            <Download className="w-3.5 h-3.5 mr-1.5" />
-            Download .json
+          <Button
+            size="sm"
+            variant={jsonDownloaded ? "default" : "outline"}
+            onClick={downloadJSON}
+          >
+            {jsonDownloaded ? (
+              <>
+                <Check className="w-3.5 h-3.5 mr-1.5" />
+                Downloaded!
+              </>
+            ) : (
+              <>
+                <Download className="w-3.5 h-3.5 mr-1.5" />
+                Download .json
+              </>
+            )}
           </Button>
         </CardContent>
       </Card>

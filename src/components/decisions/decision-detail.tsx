@@ -328,7 +328,7 @@ export function DecisionDetailClient({
               <Button
                 size="sm"
                 onClick={handleConfirm}
-                disabled={isPending || (answer === null && definition.inputType !== "file_upload")}
+                disabled={isPending || (answer === null && definition.inputType !== "file_upload" && definition.inputType !== "data_table")}
               >
                 <Check className="w-3.5 h-3.5 mr-1.5" />
                 Confirm Answer

@@ -345,10 +345,49 @@ export const DECISIONS: DecisionDefinition[] = [
     categorySlug: "appetite-business-rules",
     title: "Complete Appetite Rule Set",
     question:
-      "Upload the full appetite guide document, or define all underwriting rules the system should enforce.",
+      "Define all underwriting rules the system should enforce. Add each rule as a row in the table below.",
     context:
-      "The system needs 15-20 formal rules covering key underwriting criteria across all lines of business. Currently only 3 rules are implemented (revenue cap, missing loss runs, missing prior carrier). We need the complete set. You can upload an existing appetite guide document, or describe the rules in the notes field below.",
-    inputType: "file_upload",
+      "The system needs 15-20 formal rules covering key underwriting criteria across all lines of business. Currently only 3 rules are implemented (revenue cap, missing loss runs, missing prior carrier). We need the complete set. Add rules in the table below, and use the notes field for any additional context or to reference external documents.",
+    inputType: "data_table",
+    tableColumns: [
+      {
+        key: "ruleName",
+        label: "Rule Name",
+        type: "text",
+        required: true,
+      },
+      {
+        key: "condition",
+        label: "Criteria / Condition",
+        type: "text",
+        required: true,
+      },
+      {
+        key: "action",
+        label: "Action",
+        type: "select",
+        required: true,
+        options: [
+          { value: "accept", label: "Accept" },
+          { value: "refer", label: "Refer" },
+          { value: "decline", label: "Decline" },
+          { value: "flag", label: "Flag for Review" },
+        ],
+      },
+      {
+        key: "lob",
+        label: "Line of Business",
+        type: "select",
+        options: [
+          { value: "all", label: "All Lines" },
+          { value: "gl", label: "General Liability" },
+          { value: "property", label: "Property" },
+          { value: "wc", label: "Workers Comp" },
+          { value: "auto", label: "Commercial Auto" },
+          { value: "umbrella", label: "Umbrella/Excess" },
+        ],
+      },
+    ],
     required: true,
     order: 12,
   },
