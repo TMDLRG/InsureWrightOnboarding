@@ -310,6 +310,18 @@ describe("US-specific content is eliminated", () => {
     const text = nonCmp010.map(getAllText).join(" ");
     expect(text).not.toMatch(/\bOFAC\b/);
   });
+
+  it("no decision contains 'coverage' (US term — should be 'cover')", () => {
+    expect(allText()).not.toMatch(/\bcoverage\b/i);
+  });
+
+  it("no decision contains 'policy form' (US term — should be 'policy wording')", () => {
+    expect(allText()).not.toMatch(/policy form/i);
+  });
+
+  it("no decision contains 'loss control' (US term — should be 'risk management')", () => {
+    expect(allText()).not.toMatch(/loss control/i);
+  });
 });
 
 // ============================================================

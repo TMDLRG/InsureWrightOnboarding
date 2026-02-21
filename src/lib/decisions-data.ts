@@ -160,7 +160,7 @@ export const DECISIONS: DecisionDefinition[] = [
     categorySlug: "appetite-business-rules",
     title: "Construction Type Restrictions",
     question:
-      "Which building construction types should trigger a referral or decline for property coverage?",
+      "Which building construction types should trigger a referral or decline for property cover?",
     context:
       "Construction type directly affects property risk. UK construction classifications include fire-resistive, non-combustible, limited combustible, combustible, and timber frame. Classification affects property rating and may reference Building Regulations (Part B fire safety in England/Wales) or equivalent Irish standards (Part B of the Irish Building Regulations). Timber frame construction is often excluded or heavily surcharged.",
     inputType: "data_table",
@@ -441,7 +441,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Do you offer premium discounts for multi-line bundles? How is this structured?",
     context:
-      "Many MGAs offer package discounts when an insured buys multiple coverages. We need to know if bundling applies, which combinations qualify, and the discount structure (e.g., 5% discount for Public Liability + Property, 10% for 3+ lines).",
+      "Many MGAs offer package discounts when an insured buys multiple covers. We need to know if bundling applies, which combinations qualify, and the discount structure (e.g., 5% discount for Public Liability + Property, 10% for 3+ lines).",
     inputType: "free_text",
     placeholder:
       "e.g., 5% package discount for any 2-line combination. 10% for 3+ lines. Commercial Combined bundles Public Liability + Property + Employers' Liability at a blended rate...",
@@ -562,7 +562,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Does the entity type (Ltd, PLC, LLP, Partnership, Sole Trader) affect rating or appetite decisions?",
     context:
-      "Entity type can affect liability exposure and coverage structure. For example, sole traders may have different employers' liability requirements than limited companies. If entity type matters for rating or triage, we need to extract and validate it.",
+      "Entity type can affect liability exposure and cover structure. For example, sole traders may have different employers' liability requirements than limited companies. If entity type matters for rating or triage, we need to extract and validate it.",
     inputType: "single_select",
     options: [
       { value: "affects_rating", label: "Yes, it affects rating and/or appetite" },
@@ -726,7 +726,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "How should Total Insured Value (TIV) be calculated? Is it always Building + Contents + Business Income + Equipment?",
     context:
-      "TIV drives property rating and may have different definitions depending on the coverage form. Some exclude business income, others include extra expense. We need the canonical formula.",
+      "TIV drives property rating and may have different definitions depending on the cover form. Some exclude business income, others include extra expense. We need the canonical formula.",
     inputType: "free_text",
     placeholder:
       "e.g., TIV = Building Value + Contents Value + Business Income (12 months) + Equipment Value. If any component is missing, use replacement cost estimates...",
@@ -924,7 +924,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "When an insured has multiple lines, how are premiums combined? Simple addition, blended rate, or package discount?",
     context:
-      "Multi-line accounts may have special pricing. We need to know if each line is priced independently and then summed, or if there's a package-level calculation that considers the combination of coverages.",
+      "Multi-line accounts may have special pricing. We need to know if each line is priced independently and then summed, or if there's a package-level calculation that considers the combination of covers.",
     inputType: "free_text",
     placeholder:
       "e.g., Each line rated independently. Sum all line premiums. Apply 5% package discount if 2+ lines. Minimum combined premium: £5,000 / €5,500...",
@@ -1109,10 +1109,10 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "What documents and information should be included in the quote package sent to the broker?",
     context:
-      "The quote package is what the broker sees. Beyond the premium/excess/limit, it may include: coverage summary, key exclusions, conditions, subjectivities (standard London market practice), payment terms, required forms, binding instructions, and binding authority reference / coverholder stamp. We need the complete list.",
+      "The quote package is what the broker sees. Beyond the premium/excess/limit, it may include: cover summary, key exclusions, conditions, subjectivities (standard London market practice), payment terms, required forms, binding instructions, and binding authority reference / coverholder stamp. We need the complete list.",
     inputType: "free_text",
     placeholder:
-      "e.g., Quote package includes:\n1. Quote letter with 3 options (recommended, conservative, broader)\n2. Premium breakdown by line\n3. Coverage summary (included/excluded)\n4. Excess schedule\n5. Key conditions, warranties, and subjectivities\n6. Binding instructions and deadlines\n7. Required signed applications\n8. Binding authority / coverholder reference",
+      "e.g., Quote package includes:\n1. Quote letter with 3 options (recommended, conservative, broader)\n2. Premium breakdown by line\n3. Cover summary (included/excluded)\n4. Excess schedule\n5. Key conditions, warranties, and subjectivities\n6. Binding instructions and deadlines\n7. Required signed applications\n8. Binding authority / coverholder reference",
     required: true,
     order: 9,
   },
@@ -1450,7 +1450,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "How should the three quote options be labelled? (e.g., Recommended / Conservative / Broader)",
     context:
-      "The system generates three quote options with different premium, excess, and coverage levels. The naming affects how brokers perceive the options. 'Recommended' implies our preference; 'Option A/B/C' is neutral; descriptive names like 'Standard / Enhanced / Premium' convey value.",
+      "The system generates three quote options with different premium, excess, and cover levels. The naming affects how brokers perceive the options. 'Recommended' implies our preference; 'Option A/B/C' is neutral; descriptive names like 'Standard / Enhanced / Premium' convey value.",
     inputType: "free_text",
     placeholder:
       "e.g., Option A: 'Recommended' (best risk-adjusted value)\nOption B: 'Conservative' (higher excess, lower premium)\nOption C: 'Broader' (lower excess, higher premium, enhanced limits)",
@@ -1467,7 +1467,7 @@ export const DECISIONS: DecisionDefinition[] = [
       "The recommendation signals our preferred option. It could be based on: the best risk-adjusted value, the option closest to the broker's requested terms, the most competitively priced, or always the middle option. We need a clear rule.",
     inputType: "free_text",
     placeholder:
-      "e.g., Recommend the option that:\n1. Matches the broker's requested limits/excess most closely\n2. Falls within standard terms (no modifications needed)\n3. If no broker preference stated, recommend the middle option (Option A)\n\nNever recommend the broadest coverage if loss history is adverse.",
+      "e.g., Recommend the option that:\n1. Matches the broker's requested limits/excess most closely\n2. Falls within standard terms (no modifications needed)\n3. If no broker preference stated, recommend the middle option (Option A)\n\nNever recommend the broadest cover if loss history is adverse.",
     required: true,
     order: 2,
   },
@@ -1478,12 +1478,12 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "What information must be included in the quote letter sent to the broker? Select all that apply.",
     context:
-      "The quote letter is the formal offer. Different items serve different purposes — premium satisfies the broker's pricing needs; conditions protect our interests; coverage summary helps the broker sell to their client.",
+      "The quote letter is the formal offer. Different items serve different purposes — premium satisfies the broker's pricing needs; conditions protect our interests; cover summary helps the broker sell to their client.",
     inputType: "multi_select",
     options: [
       { value: "premium", label: "Premium breakdown by line" },
       { value: "limits", label: "Limits and excess per line" },
-      { value: "coverage", label: "Coverage summary (inclusions)" },
+      { value: "cover", label: "Cover summary (inclusions)" },
       { value: "exclusions", label: "Key exclusions" },
       { value: "conditions", label: "Conditions and warranties" },
       { value: "subjectivities", label: "Subjectivities (items needed before binding)" },
@@ -1515,7 +1515,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "How should limits and excess levels vary across the three quote options?",
     context:
-      "The three options should offer meaningfully different cost/coverage trade-offs. We need to define how limits and excess vary — for example, Option B might have 2x the excess of Option A but 10% lower premium.",
+      "The three options should offer meaningfully different cost/cover trade-offs. We need to define how limits and excess vary — for example, Option B might have 2x the excess of Option A but 10% lower premium.",
     inputType: "data_table",
     tableColumns: [
       { key: "option", label: "Option", type: "text", required: true },
@@ -1534,7 +1534,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Upload or describe the standard terms and conditions language included with every quote.",
     context:
-      "Standard T&C language covers: policy form, coverage territory, cancellation terms, audit provisions, loss control requirements, etc. This language is usually reviewed by legal and should be consistent across all quotes.",
+      "Standard T&C language covers: policy wording, territorial scope, cancellation terms, premium adjustment provisions, risk management requirements, etc. This language is usually reviewed by legal and should be consistent across all quotes.",
     inputType: "file_upload",
     required: true,
     order: 6,
@@ -1563,7 +1563,7 @@ export const DECISIONS: DecisionDefinition[] = [
       "The rationale explains our recommendation in business terms. It can reference the applicant's risk profile, industry benchmarks, loss history, and how the recommended terms align with their needs. This builds broker confidence in our underwriting.",
     inputType: "free_text",
     placeholder:
-      "e.g., Rationale should reference:\n1. The applicant's loss history (favourable/unfavourable)\n2. Industry comparison (how their risk compares to class average)\n3. Specific coverage features that match their exposure profile\n4. Any modifications or credits applied and why",
+      "e.g., Rationale should reference:\n1. The applicant's loss history (favourable/unfavourable)\n2. Industry comparison (how their risk compares to class average)\n3. Specific cover features that match their exposure profile\n4. Any modifications or credits applied and why",
     required: false,
     order: 8,
   },
