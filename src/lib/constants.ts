@@ -32,4 +32,4 @@ export const STATUS_CONFIG: Record<
 
 export const APP_NAME = "InsureWright Onboarding";
 export const APP_DESCRIPTION =
-  "Stakeholder onboarding portal for underwriting decisions";
+  "Stakeholder onboarding portal for underwriting decisions — Ireland, UK & EEA specialty MGA market";

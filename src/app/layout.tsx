@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "InsureWright Onboarding — Stakeholder Portal",
   description:
-    "InsureWright Onboarding stakeholder decision portal. Define appetite rules, data requirements, workflows, and more.",
+    "InsureWright Onboarding stakeholder decision portal for Ireland, UK & EEA specialty MGAs. Define appetite rules, data requirements, workflows, compliance, and more.",
 };
 
 export default async function RootLayout({

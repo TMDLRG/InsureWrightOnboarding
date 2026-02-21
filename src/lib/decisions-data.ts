@@ -88,7 +88,8 @@ export const CATEGORIES: Category[] = [
 ];
 
 // ============================================================
-// DECISION DEFINITIONS — 82 items across 10 categories
+// DECISION DEFINITIONS — 88 items across 10 categories
+// Regionalized for Ireland / UK / EEA delegated authority MGAs
 // ============================================================
 
 export const DECISIONS: DecisionDefinition[] = [
@@ -98,16 +99,16 @@ export const DECISIONS: DecisionDefinition[] = [
   {
     id: "ABR-001",
     categorySlug: "appetite-business-rules",
-    title: "Revenue Thresholds by Line",
+    title: "Turnover Thresholds by Line",
     question:
-      "What are the maximum and minimum annual revenue thresholds for each line of business we write?",
+      "What are the maximum and minimum annual turnover thresholds for each line of business we write?",
     context:
-      "Revenue limits determine which submissions fall within our appetite. Submissions outside these thresholds are either auto-declined or referred to a senior underwriter. We need specific dollar amounts per line of business (e.g., GL maximum $50M, WC maximum $25M). The current prototype uses a single $50M cap for all lines.",
+      "Turnover limits determine which submissions fall within our appetite. Submissions outside these thresholds are either auto-declined or referred to a senior underwriter. We need specific GBP/EUR amounts per line of business (e.g., Public Liability maximum £50M/€55M, Employers' Liability maximum £25M/€28M). The current prototype uses a single £50M cap for all lines.",
     inputType: "data_table",
     tableColumns: [
       { key: "line", label: "Line of Business", type: "text", required: true },
-      { key: "minRevenue", label: "Minimum Revenue ($)", type: "number", required: true },
-      { key: "maxRevenue", label: "Maximum Revenue ($)", type: "number", required: true },
+      { key: "minTurnover", label: "Minimum Turnover (£/€)", type: "number", required: true },
+      { key: "maxTurnover", label: "Maximum Turnover (£/€)", type: "number", required: true },
       {
         key: "action",
         label: "If Outside Range",
@@ -125,32 +126,32 @@ export const DECISIONS: DecisionDefinition[] = [
   {
     id: "ABR-002",
     categorySlug: "appetite-business-rules",
-    title: "NAICS Industry Blocklist",
+    title: "UK SIC / NACE Industry Blocklist",
     question:
-      "Which industry codes (NAICS) should be automatically excluded from consideration?",
+      "Which industry codes (UK SIC 2007 / NACE Rev. 2.1) should be automatically excluded from consideration?",
     context:
-      "Certain industries are entirely outside our risk appetite. We need the specific 6-digit NAICS codes and the reason for exclusion. For example, cannabis operations (111998), coal mining (212100), etc. Any submission with a blocked NAICS code would be auto-declined without further review.",
+      "Certain industries are entirely outside our risk appetite. We need the specific UK SIC 2007 codes (or NACE Rev. 2.1 for EEA submissions) and the reason for exclusion. For example, tobacco manufacturing (12.00), weapons and ammunition (25.40), gambling activities (92.00). Any submission with a blocked industry code would be auto-declined without further review.",
     inputType: "data_table",
     tableColumns: [
-      { key: "naicsCode", label: "NAICS Code", type: "text", required: true },
+      { key: "industryCode", label: "Industry Code (UK SIC / NACE)", type: "text", required: true },
       { key: "description", label: "Industry", type: "text", required: true },
       { key: "reason", label: "Reason for Exclusion", type: "text", required: true },
     ],
-    placeholder: "Add each excluded NAICS code as a row",
+    placeholder: "Add each excluded UK SIC / NACE code as a row",
     required: true,
     order: 2,
   },
   {
     id: "ABR-003",
     categorySlug: "appetite-business-rules",
-    title: "Payroll-to-Revenue Ratio",
+    title: "Payroll-to-Turnover Ratio",
     question:
-      "At what payroll-to-revenue ratio should a submission be flagged? Does this vary by industry or line?",
+      "At what payroll-to-turnover ratio should a submission be flagged? Does this vary by industry or line?",
     context:
-      "An unusually high payroll relative to revenue can indicate labor-intensive operations with higher workers' compensation exposure. The current spec uses a 30% threshold. We need to confirm this ratio and whether it differs by NAICS code or line of business.",
+      "An unusually high payroll relative to turnover can indicate labour-intensive operations with higher employers' liability exposure. The current spec uses a 30% threshold. We need to confirm this ratio and whether it differs by UK SIC code or line of business.",
     inputType: "free_text",
     placeholder:
-      "e.g., If annual payroll exceeds 30% of annual revenue, refer to senior underwriter. For construction (NAICS 23xxxx), threshold is 45%...",
+      "e.g., If annual payroll exceeds 30% of annual turnover, refer to senior underwriter. For construction (UK SIC Division 41-43), threshold is 45%...",
     required: true,
     order: 3,
   },
@@ -161,7 +162,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Which building construction types should trigger a referral or decline for property coverage?",
     context:
-      "Construction type directly affects property risk. The ISO classification scale runs from 1 (fire resistive) to 6 (frame). Frame construction is often excluded or heavily surcharge. We need to know which types are acceptable, which require referral, and which are declined.",
+      "Construction type directly affects property risk. UK construction classifications include fire-resistive, non-combustible, limited combustible, combustible, and timber frame. Classification affects property rating and may reference Building Regulations (Part B fire safety in England/Wales) or equivalent Irish standards (Part B of the Irish Building Regulations). Timber frame construction is often excluded or heavily surcharged.",
     inputType: "data_table",
     tableColumns: [
       { key: "type", label: "Construction Type", type: "text", required: true },
@@ -256,7 +257,7 @@ export const DECISIONS: DecisionDefinition[] = [
       "These three outcomes drive the entire triage system. 'Pass' means auto-quotable within junior UW authority. 'Refer' means escalation to a senior underwriter who may still approve. 'Decline' means outside appetite with no path to approval. We need precise operational definitions including authority levels.",
     inputType: "free_text",
     placeholder:
-      "Pass: Submission meets all appetite rules and can be quoted by the system without human review.\n\nRefer: Submission triggers one or more referral rules. A senior underwriter reviews and may approve, modify terms, or decline.\n\nDecline: Submission violates a hard-stop rule (e.g., blocked NAICS, excessive loss history). No override available.",
+      "Pass: Submission meets all appetite rules and can be quoted by the system without human review.\n\nRefer: Submission triggers one or more referral rules. A senior underwriter reviews and may approve, modify terms, or decline.\n\nDecline: Submission violates a hard-stop rule (e.g., blocked industry code (UK SIC), excessive loss history). No override available.",
     required: true,
     order: 7,
   },
@@ -267,7 +268,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Which specific rule failures result in an automatic decline that cannot be overridden?",
     context:
-      "Some underwriting criteria represent absolute boundaries. For example, a blocked industry code or sanctions match may be a hard decline regardless of other factors. We need the complete list of 'no-waiver' rules so the system can auto-decline without referral.",
+      "Some underwriting criteria represent absolute boundaries. For example, a blocked industry code, OFSI/EU sanctions match, or uninsurable risk class may be a hard decline regardless of other factors. We need the complete list of 'no-waiver' rules so the system can auto-decline without referral.",
     inputType: "data_table",
     tableColumns: [
       { key: "rule", label: "Rule Name", type: "text", required: true },
@@ -285,7 +286,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Which rule failures should trigger a referral that a senior underwriter can override?",
     context:
-      "Referral rules identify submissions that need human judgment but aren't automatic declines. For example, revenue slightly above threshold, or a single large claim in otherwise clean history. We need each rule with its trigger condition and the information the senior UW needs to make their decision.",
+      "Referral rules identify submissions that need human judgment but aren't automatic declines. For example, turnover slightly above threshold, or a single large claim in otherwise clean history. We need each rule with its trigger condition and the information the senior UW needs to make their decision.",
     inputType: "data_table",
     tableColumns: [
       { key: "rule", label: "Rule Name", type: "text", required: true },
@@ -303,7 +304,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "When the system extracts a value but cannot verify it (low confidence), what should happen?",
     context:
-      "The extraction pipeline may find a value but flag it as uncertain — for example, a revenue figure extracted from a footnote rather than a clearly labeled field. This 'unknown' state is different from 'missing.' We need a policy: treat as missing? Accept with a flag? Auto-refer?",
+      "The extraction pipeline may find a value but flag it as uncertain — for example, a turnover figure extracted from a footnote rather than a clearly labelled field. This 'unknown' state is different from 'missing.' We need a policy: treat as missing? Accept with a flag? Auto-refer?",
     inputType: "free_text",
     placeholder:
       "e.g., Flag the field as 'needs review' and include it in the referral memo. If more than 3 fields are flagged, auto-refer the entire submission...",
@@ -317,7 +318,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Should missing fields be classified by severity? If so, what levels and what triggers each?",
     context:
-      "Not all missing data is equally important. A missing FEIN may just need a quick follow-up (info), while missing loss runs may block the entire review (blocker). Proposed levels: Info (nice to have), Warning (should have, can proceed with flag), Blocker (must have, cannot proceed).",
+      "Not all missing data is equally important. A missing Company Registration Number may just need a quick follow-up (info), while missing claims history may block the entire review (blocker). Proposed levels: Info (nice to have), Warning (should have, can proceed with flag), Blocker (must have, cannot proceed).",
     inputType: "single_select",
     options: [
       {
@@ -347,7 +348,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Define all underwriting rules the system should enforce. Add each rule as a row in the table below.",
     context:
-      "The system needs 15-20 formal rules covering key underwriting criteria across all lines of business. Currently only 3 rules are implemented (revenue cap, missing loss runs, missing prior carrier). We need the complete set. Add rules in the table below, and use the notes field for any additional context or to reference external documents.",
+      "The system needs 15-20 formal rules covering key underwriting criteria across all lines of business. Currently only 3 rules are implemented (turnover cap, missing claims history, missing prior insurer). We need the complete set. Add rules in the table below, and use the notes field for any additional context or to reference external documents.",
     inputType: "data_table",
     tableColumns: [
       {
@@ -380,11 +381,13 @@ export const DECISIONS: DecisionDefinition[] = [
         type: "select",
         options: [
           { value: "all", label: "All Lines" },
-          { value: "gl", label: "General Liability" },
+          { value: "public_liability", label: "Public Liability" },
           { value: "property", label: "Property" },
-          { value: "wc", label: "Workers Comp" },
-          { value: "auto", label: "Commercial Auto" },
-          { value: "umbrella", label: "Umbrella/Excess" },
+          { value: "el", label: "Employers' Liability" },
+          { value: "motor", label: "Commercial Motor" },
+          { value: "excess", label: "Excess of Loss" },
+          { value: "pi", label: "Professional Indemnity" },
+          { value: "commercial_combined", label: "Commercial Combined" },
         ],
       },
     ],
@@ -398,7 +401,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "How are appetite rules updated over time? Who approves changes? How is version history maintained?",
     context:
-      "Appetite rules evolve as the book of business matures and market conditions change. We need to understand the governance process so the system can support versioning, audit trails, and proper authorization for rule changes.",
+      "Appetite rules evolve as the book of business matures and market conditions change. We need to understand the governance process so the system can support versioning, audit trails, and proper authorisation for rule changes.",
     inputType: "free_text",
     placeholder:
       "e.g., Rules are reviewed quarterly by the underwriting committee. Changes require sign-off from the Chief Underwriting Officer. All prior versions are retained for audit...",
@@ -416,17 +419,17 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Which lines of business will the underwriting system handle? Select all that apply.",
     context:
-      "Each line of business has different data requirements, rating approaches, and regulatory considerations. We need to know the full scope so the system handles all relevant lines. The current prototype only handles General Liability.",
+      "Each line of business has different data requirements, rating approaches, and regulatory considerations. We need to know the full scope so the system handles all relevant lines. The current prototype only handles Public Liability.",
     inputType: "multi_select",
     options: [
-      { value: "gl", label: "General Liability (GL)" },
-      { value: "wc", label: "Workers' Compensation (WC)" },
+      { value: "public_liability", label: "Public Liability / Products Liability" },
+      { value: "el", label: "Employers' Liability (EL)" },
       { value: "property", label: "Commercial Property" },
       { value: "do", label: "Directors & Officers (D&O)" },
-      { value: "umbrella", label: "Umbrella / Excess" },
-      { value: "bop", label: "Business Owners Policy (BOP)" },
-      { value: "im", label: "Inland Marine" },
-      { value: "auto", label: "Commercial Auto" },
+      { value: "excess", label: "Excess of Loss" },
+      { value: "commercial_combined", label: "Commercial Combined" },
+      { value: "pi", label: "Professional Indemnity (PI)" },
+      { value: "motor", label: "Commercial Motor" },
     ],
     required: true,
     order: 1,
@@ -438,10 +441,10 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Do you offer premium discounts for multi-line bundles? How is this structured?",
     context:
-      "Many MGAs offer package discounts when an insured buys multiple coverages. We need to know if bundling applies, which combinations qualify, and the discount structure (e.g., 5% discount for GL + Property, 10% for 3+ lines).",
+      "Many MGAs offer package discounts when an insured buys multiple coverages. We need to know if bundling applies, which combinations qualify, and the discount structure (e.g., 5% discount for Public Liability + Property, 10% for 3+ lines).",
     inputType: "free_text",
     placeholder:
-      "e.g., 5% package discount for any 2-line combination. 10% for 3+ lines. BOP automatically bundles GL + Property at a blended rate...",
+      "e.g., 5% package discount for any 2-line combination. 10% for 3+ lines. Commercial Combined bundles Public Liability + Property + Employers' Liability at a blended rate...",
     required: true,
     order: 2,
   },
@@ -452,10 +455,10 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Do appetite rules differ by line of business? Describe any line-specific variations.",
     context:
-      "Revenue thresholds, NAICS restrictions, or loss ratio triggers may be different for GL vs. WC vs. Property. For example, the WC appetite may be more restrictive on high-hazard classes than GL. We need to know where the rules diverge.",
+      "Turnover thresholds, UK SIC restrictions, or loss ratio triggers may be different for Public Liability vs. Employers' Liability vs. Property. For example, the EL appetite may be more restrictive on high-hazard trades than Public Liability. We need to know where the rules diverge.",
     inputType: "free_text",
     placeholder:
-      "e.g., WC: Exclude all construction classes above hazard group 5. Property: Require minimum Sprinklered for buildings over 50,000 sq ft. GL: No specific restrictions beyond the general appetite...",
+      "e.g., EL: Exclude all construction trades above risk category 5 (UK SIC Division 41-43). Property: Require fire suppression system for buildings over 5,000 sq m. Reference Building Regulations Part B (England/Wales) or equivalent Irish standards. Public Liability: No specific restrictions beyond the general appetite...",
     required: true,
     order: 3,
   },
@@ -466,7 +469,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Are lines rated independently, as a combined package, or both options available?",
     context:
-      "The rating workbook may price each line separately (GL premium + WC premium + Property premium) or use a blended approach. This affects how the system calls the rater and presents quote options.",
+      "The rating workbook may price each line separately (Public Liability premium + EL premium + Property premium) or use a blended approach. This affects how the system calls the rater and presents quote options.",
     inputType: "single_select",
     options: [
       { value: "independent", label: "Rate each line independently" },
@@ -479,16 +482,16 @@ export const DECISIONS: DecisionDefinition[] = [
   {
     id: "LOB-005",
     categorySlug: "lines-of-business",
-    title: "Limit & Deductible Structures",
+    title: "Limit & Excess Structures",
     question:
-      "For each line, what limit options and deductible options are available?",
+      "For each line, what limit options and excess options are available?",
     context:
-      "Quote options are built from available limit/deductible combinations. We need to know the standard offerings per line — for example, GL might offer $1M/$2M occurrence/aggregate with $5K/$10K/$25K deductible options.",
+      "Quote options are built from available limit/excess combinations. We need to know the standard offerings per line — for example, Public Liability might offer £1M/£2M any one claim/in the aggregate with £5K/£10K/£25K excess options.",
     inputType: "data_table",
     tableColumns: [
       { key: "line", label: "Line of Business", type: "text", required: true },
       { key: "limits", label: "Available Limits", type: "text", required: true },
-      { key: "deductibles", label: "Deductible Options", type: "text", required: true },
+      { key: "excess", label: "Excess Options", type: "text", required: true },
       { key: "standardTerms", label: "Standard Terms", type: "text" },
     ],
     required: true,
@@ -522,18 +525,18 @@ export const DECISIONS: DecisionDefinition[] = [
       },
       { key: "notes", label: "Notes / Conditions", type: "text" },
     ],
-    placeholder: "Fields: Named Insured, FEIN, NAICS, Revenue, Payroll, Policy Period, GL Limit, Prior Carrier, Loss History, Years in Business, Employee Count, Property Values, Principals/Officers, Business Description, Entity Type, SIC Code, Contact Info, Mailing Address",
+    placeholder: "Fields: Named Insured, Company Registration Number, VAT Number, UK SIC / NACE Code, Turnover, Payroll, Period of Insurance, Public Liability Limit, Prior Insurer, Claims History, Years Trading, Employee Count / Headcount, Property Values, Directors/Partners, Business Description, Entity Type (Ltd/PLC/LLP/Sole Trader), Broker Contact, Registered Address, Trading Address",
     required: true,
     order: 1,
   },
   {
     id: "DFR-002",
     categorySlug: "data-fields-requirements",
-    title: "DBA / Trade Name",
+    title: "Trading Name",
     question:
-      "Should we capture the DBA (trade name) separately from the legal entity name? Is the DBA used in adverse news searches?",
+      "Should we capture the trading name (t/a) separately from the legal entity name? Is the trading name used in adverse news searches?",
     context:
-      "Some companies operate under a different name than their legal entity. Capturing the DBA separately helps with adverse news screening (searching both names) and ensures the policy is issued correctly.",
+      "Some companies operate under a different name than their legal entity. Capturing the trading name separately helps with adverse news screening (searching both names) and ensures the policy is issued correctly.",
     inputType: "single_select",
     options: [
       {
@@ -557,9 +560,9 @@ export const DECISIONS: DecisionDefinition[] = [
     categorySlug: "data-fields-requirements",
     title: "Entity Type",
     question:
-      "Does the entity type (LLC, Corporation, Partnership, Sole Proprietor) affect rating or appetite decisions?",
+      "Does the entity type (Ltd, PLC, LLP, Partnership, Sole Trader) affect rating or appetite decisions?",
     context:
-      "Entity type can affect liability exposure and coverage structure. For example, sole proprietors may have different workers' comp requirements than corporations. If entity type matters for rating or triage, we need to extract and validate it.",
+      "Entity type can affect liability exposure and coverage structure. For example, sole traders may have different employers' liability requirements than limited companies. If entity type matters for rating or triage, we need to extract and validate it.",
     inputType: "single_select",
     options: [
       { value: "affects_rating", label: "Yes, it affects rating and/or appetite" },
@@ -572,15 +575,15 @@ export const DECISIONS: DecisionDefinition[] = [
   {
     id: "DFR-004",
     categorySlug: "data-fields-requirements",
-    title: "SIC vs. NAICS Codes",
+    title: "UK SIC 2007 vs. NACE Rev. 2.1",
     question:
-      "Should we accept SIC codes as a fallback when NAICS is not provided, or require NAICS exclusively?",
+      "Should we use UK SIC 2007 as the primary industry classification, accept NACE Rev. 2.1 codes from EEA submissions, or require a specific standard?",
     context:
-      "Some older submissions and systems still use SIC codes instead of NAICS. We can map between them, but the mapping is imperfect. Need to know if SIC is acceptable or if we should always request NAICS.",
+      "UK SIC 2007 is the standard classification for UK establishments and maps closely to NACE Rev. 2.1 used across the EEA. Irish submissions may use either. We need to determine the primary classification system and whether automatic mapping between UK SIC and NACE is acceptable.",
     inputType: "single_select",
     options: [
-      { value: "naics_only", label: "Require NAICS — request if only SIC provided" },
-      { value: "accept_sic", label: "Accept SIC and auto-map to NAICS" },
+      { value: "uk_sic_only", label: "Require UK SIC 2007 — request if only NACE provided" },
+      { value: "accept_nace", label: "Accept NACE Rev. 2.1 and auto-map to UK SIC" },
       { value: "accept_either", label: "Accept either without conversion" },
     ],
     required: true,
@@ -593,7 +596,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Should we capture a free-text business description from the broker, or must it map to a specific classification code?",
     context:
-      "Free-text descriptions are useful for underwriter context but hard to use in automated rules. A coded classification (NAICS/SIC) is machine-readable but may miss nuances. We need to know if both are needed.",
+      "Free-text descriptions are useful for underwriter context but hard to use in automated rules. A coded classification (UK SIC / NACE) is machine-readable but may miss nuances. We need to know if both are needed.",
     inputType: "single_select",
     options: [
       { value: "both", label: "Capture both free-text and classification code" },
@@ -608,12 +611,12 @@ export const DECISIONS: DecisionDefinition[] = [
     categorySlug: "data-fields-requirements",
     title: "Address Requirements",
     question:
-      "Do we need both the mailing address and each operating/location address? How are they used?",
+      "Do we need both the registered address and each trading/operating address? How are they used?",
     context:
-      "Mailing address is for correspondence. Operating addresses affect property rating (flood zones, wind zones, protection class, fire district). The property schedule (SOV) typically lists each location. We need to know which addresses matter and for what purpose.",
+      "Registered address is for correspondence and Companies House records. Operating/trading addresses affect property rating — postcode (UK) or Eircode (Ireland) enables geocoding for flood risk zones (Environment Agency in England, SEPA in Scotland, OPW in Ireland), subsidence risk, and coastal erosion. The property schedule typically lists each location.",
     inputType: "free_text",
     placeholder:
-      "e.g., Capture mailing address for correspondence. All operating locations required for property rating — need full street address for geocoding to determine flood/wind zones and protection class...",
+      "e.g., Capture registered address and all trading/operating locations. All operating locations required for property rating — need full address including postcode (UK) or Eircode (Ireland) for geocoding to determine flood risk zone and subsidence risk...",
     required: true,
     order: 6,
   },
@@ -634,15 +637,15 @@ export const DECISIONS: DecisionDefinition[] = [
   {
     id: "DFR-008",
     categorySlug: "data-fields-requirements",
-    title: "Deductible Preference",
+    title: "Excess Preference",
     question:
-      "Does the broker specify a requested deductible, or is the deductible determined entirely by the rating model?",
+      "Does the broker specify a requested excess, or is the excess determined entirely by the rating model?",
     context:
-      "Some brokers submit with a specific deductible in mind. Others expect the insurer to propose options. This affects whether 'requested deductible' is an extracted field or only an output of the rating engine.",
+      "Some brokers submit with a specific excess in mind. Others expect the insurer to propose options. This affects whether 'requested excess' is an extracted field or only an output of the rating engine.",
     inputType: "single_select",
     options: [
-      { value: "broker_requests", label: "Broker specifies preferred deductible" },
-      { value: "system_determines", label: "System determines deductible from rating" },
+      { value: "broker_requests", label: "Broker specifies preferred excess" },
+      { value: "system_determines", label: "System determines excess from rating" },
       { value: "both", label: "Broker may request, but system proposes options" },
     ],
     required: true,
@@ -651,11 +654,11 @@ export const DECISIONS: DecisionDefinition[] = [
   {
     id: "DFR-009",
     categorySlug: "data-fields-requirements",
-    title: "Loss History Detail Level",
+    title: "Claims History Detail Level",
     question:
-      "What specific fields do we need from each loss run entry? Define the structured data per claim.",
+      "What specific fields do we need from each claims history entry? Define the structured data per claim.",
     context:
-      "Loss runs are one of the most critical underwriting inputs. They can range from a simple summary (3 claims, $200K total) to detailed per-claim records. We need to know exactly what fields to extract per claim for the triage rules and rating model.",
+      "Claims history is one of the most critical underwriting inputs. It can range from a simple summary (3 claims, £200K/€220K total) to detailed per-claim records. We need to know exactly what fields to extract per claim for the triage rules and rating model.",
     inputType: "data_table",
     tableColumns: [
       { key: "field", label: "Field Name", type: "text", required: true },
@@ -671,21 +674,21 @@ export const DECISIONS: DecisionDefinition[] = [
       },
       { key: "usage", label: "How It's Used", type: "text" },
     ],
-    placeholder: "Suggested fields: Claim Number, Date of Loss, Date Reported, Claim Status, Cause of Loss, Paid Amount, Reserved Amount, Incurred Amount, Defense Costs, Subrogation Recovery",
+    placeholder: "Suggested fields: Claim Number, Date of Loss, Date Reported, Claim Status, Cause of Loss, Paid Amount, Reserved Amount, Incurred Amount, Defence Costs, Subrogation Recovery",
     required: true,
     order: 9,
   },
   {
     id: "DFR-010",
     categorySlug: "data-fields-requirements",
-    title: "Principals / Officers",
+    title: "Directors / Persons of Significant Control",
     question:
-      "Do we need to capture the names, titles, and ownership percentages of company principals? Are these used for adverse news screening?",
+      "Do we need to capture the names, positions, and shareholding/control percentages of company directors and persons of significant control (PSCs)? Are these used for adverse news screening?",
     context:
-      "Principal names can be screened against sanctions lists and adverse news sources. Some underwriting guidelines require knowing who owns/controls the business. If principals matter, we need to know what fields to capture and how they feed into the screening process.",
+      "Director and PSC names can be screened against OFSI consolidated sanctions list, EU consolidated sanctions list, and adverse news sources. The Companies House PSC register lists persons with >25% significant control. Understanding who owns/controls the business is critical for delegated authority compliance.",
     inputType: "free_text",
     placeholder:
-      "e.g., Capture all principals with >10% ownership. Include name, title, ownership %. Screen each principal against adverse news sources. Any principal with adverse findings triggers a referral...",
+      "e.g., Capture all directors and persons of significant control (>25% shareholding/voting rights per Companies House PSC register). Include name, position, control percentage. Screen each against OFSI/EU sanctions and adverse news sources. Any match triggers a referral...",
     required: true,
     order: 10,
   },
@@ -696,14 +699,14 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Which property schedule fields do we need per location? Select all that apply.",
     context:
-      "The Statement of Values (SOV) describes each insured location. Different fields feed into property rating, catastrophe modeling, and underwriting judgment. COPE (Construction, Occupancy, Protection, Exposure) is the standard framework.",
+      "The Statement of Values (SOV) describes each insured location. Different fields feed into property rating, catastrophe modelling, and underwriting judgment. COPE (Construction, Occupancy, Protection, Exposure) is the standard framework.",
     inputType: "multi_select",
     options: [
-      { value: "construction", label: "Construction type (ISO 1-6)" },
+      { value: "construction", label: "Construction type (fire-resistive / non-combustible / timber frame etc.)" },
       { value: "occupancy", label: "Occupancy class" },
-      { value: "protection", label: "Protection class (fire district)" },
-      { value: "exposure", label: "Exposure (flood/wind/earthquake zones)" },
-      { value: "sqft", label: "Square footage" },
+      { value: "protection", label: "Fire protection (sprinklers, fire alarm category, distance to fire station)" },
+      { value: "exposure", label: "Exposure (EA/SEPA/OPW flood zone, subsidence risk, coastal erosion)" },
+      { value: "sqm", label: "Floor area (sq m)" },
       { value: "year_built", label: "Year built" },
       { value: "sprinklers", label: "Sprinkler details" },
       { value: "alarms", label: "Alarm/security systems" },
@@ -733,11 +736,11 @@ export const DECISIONS: DecisionDefinition[] = [
   {
     id: "DFR-013",
     categorySlug: "data-fields-requirements",
-    title: "Loss Run Staleness",
+    title: "Claims History Staleness",
     question:
-      "How old can loss runs be before we require updated versions? (The spec suggests 90 days.)",
+      "How old can claims history/bordereaux be before we require updated versions? (The spec suggests 90 days.)",
     context:
-      "Loss runs have a valuation date. If the valuation date is too far in the past, the data may not reflect recent claims. Industry standard is 90 days, but some carriers require more recent data.",
+      "Claims bordereaux have a valuation date. If the valuation date is too far in the past, the data may not reflect recent claims. Market standard is typically 90 days; Lloyd's coverholder arrangements may specify different requirements in the binder.",
     inputType: "numeric",
     numericValidation: {
       min: 30,
@@ -763,7 +766,7 @@ export const DECISIONS: DecisionDefinition[] = [
       { value: "contact_phone", label: "Phone Number" },
       { value: "contact_email", label: "Email Address" },
       { value: "broker_name", label: "Broker/Agency Name" },
-      { value: "broker_license", label: "Broker License Number" },
+      { value: "broker_fca_frn", label: "Broker FCA FRN / CBI Registration Number" },
     ],
     required: true,
     order: 14,
@@ -775,15 +778,15 @@ export const DECISIONS: DecisionDefinition[] = [
   {
     id: "DOC-001",
     categorySlug: "document-standards",
-    title: "ACORD Form Adoption",
+    title: "Standard Submission Format",
     question:
-      "Should we require ACORD 125/126 forms, prefer them, or accept submissions in any format?",
+      "Should we require Market Reform Contract (MRC) format, accept Lloyd's placing slips, or accept broker submissions in any format?",
     context:
-      "ACORD forms (125 for the application, 126 for GL section) provide a standardized layout that makes extraction more reliable. However, many brokers submit in proprietary formats. Requiring ACORD may reduce broker flexibility but improves accuracy.",
+      "In the London/Dublin market, the Market Reform Contract (MRC) provides a standardised placing structure. Lloyd's submissions typically follow the placing slip format. Many brokers submit via their own presentation documents. Requiring MRC format improves extraction reliability but reduces broker flexibility.",
     inputType: "single_select",
     options: [
-      { value: "required", label: "Require ACORD forms" },
-      { value: "preferred", label: "Prefer ACORD, accept other formats" },
+      { value: "mrc_required", label: "Require MRC / standard placing slip format" },
+      { value: "mrc_preferred", label: "Prefer MRC format, accept other broker presentations" },
       { value: "any", label: "Accept any format" },
     ],
     required: true,
@@ -813,12 +816,12 @@ export const DECISIONS: DecisionDefinition[] = [
     categorySlug: "document-standards",
     title: "Table Structure Expectations",
     question:
-      "Are property schedules and loss runs typically presented in formatted tables within submissions?",
+      "Are property schedules and claims bordereaux typically presented in formatted tables within submissions?",
     context:
       "Table extraction is more reliable when data is in actual bordered tables vs. free-text or space-separated columns. Understanding the typical format helps us choose the right extraction approach and set accuracy expectations.",
     inputType: "free_text",
     placeholder:
-      "e.g., Property schedules are almost always in tables (address, sq ft, construction, year built per row). Loss runs vary — some carriers provide formatted tables, others provide paragraph-style summaries...",
+      "e.g., Property schedules are almost always in tables (address, sq m, construction, year built per row). Claims bordereaux vary — some insurers provide formatted tables, others provide paragraph-style summaries...",
     required: true,
     order: 3,
   },
@@ -829,7 +832,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Please upload 3-5 real (redacted if needed) broker submission packages so we can study the actual formats.",
     context:
-      "Real submissions are the single best input for calibrating the extraction pipeline. We need examples of the actual documents brokers send — including ACORD forms, supplemental applications, loss runs, and any cover letters. Sensitive data can be redacted.",
+      "Real submissions are the single best input for calibrating the extraction pipeline. We need examples of the actual documents brokers send — including broker presentation documents, MRC slips, schedules of interest, claims bordereaux, and any cover letters. Sensitive data can be redacted.",
     inputType: "file_upload",
     required: true,
     order: 4,
@@ -860,7 +863,7 @@ export const DECISIONS: DecisionDefinition[] = [
       "If rating is done outside the workbook or if we need to validate workbook outputs, we need the rate manual. This includes base rates per class code, territory factors, and how limits affect pricing. If this is all embedded in the workbook, just note that.",
     inputType: "free_text",
     placeholder:
-      "e.g., All base rates are embedded in the Excel workbook (tab 'Rate Tables'). Rates are keyed by NAICS code, state, and limit tier...\n\nOR provide a rate table here.",
+      "e.g., All base rates are embedded in the Excel workbook (tab 'Rate Tables'). Rates are keyed by UK SIC code, territory (UK/Ireland/EEA), and limit tier...\n\nOR provide a rate table here.",
     required: true,
     order: 2,
   },
@@ -869,14 +872,14 @@ export const DECISIONS: DecisionDefinition[] = [
     categorySlug: "rating-methodology",
     title: "Exposure Multipliers",
     question:
-      "What are the loading factors for payroll, revenue, employee count, and other exposure bases?",
+      "What are the loading factors for payroll, turnover, employee count, and other exposure bases?",
     context:
-      "Premiums are typically calculated as base rate multiplied by an exposure measure (revenue for GL, payroll for WC). We need to understand which exposure base applies to each line and any multipliers or factors applied.",
+      "Premiums are typically calculated as base rate multiplied by an exposure measure (turnover for Public Liability, payroll/headcount for Employers' Liability). We need to understand which exposure base applies to each line and any multipliers or factors applied.",
     inputType: "data_table",
     tableColumns: [
       { key: "line", label: "Line of Business", type: "text", required: true },
       { key: "exposureBase", label: "Exposure Base", type: "text", required: true },
-      { key: "rate", label: "Rate per $1,000", type: "number" },
+      { key: "rate", label: "Rate per £1,000 / €1,000", type: "number" },
       { key: "notes", label: "Notes", type: "text" },
     ],
     required: true,
@@ -885,15 +888,15 @@ export const DECISIONS: DecisionDefinition[] = [
   {
     id: "RAT-004",
     categorySlug: "rating-methodology",
-    title: "Deductible Tier Boundaries",
+    title: "Excess Tier Boundaries",
     question:
-      "How do deductible options map to premium levels or risk characteristics?",
+      "How do excess options map to premium levels or risk characteristics?",
     context:
-      "The current prototype computes deductibles based on premium tiers (e.g., premium > $100K → $50K deductible option). We need to confirm or replace this logic with your actual deductible determination method.",
+      "The current prototype computes excess levels based on premium tiers (e.g., premium > £100K → £50K excess option). We need to confirm or replace this logic with your actual excess determination method.",
     inputType: "data_table",
     tableColumns: [
       { key: "line", label: "Line", type: "text", required: true },
-      { key: "deductible", label: "Deductible Amount", type: "text", required: true },
+      { key: "excess", label: "Excess Amount", type: "text", required: true },
       { key: "condition", label: "When This Applies", type: "text", required: true },
       { key: "premiumImpact", label: "Premium Credit/Charge", type: "text" },
     ],
@@ -907,10 +910,10 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "What schedule modification or experience modification factors are applied?",
     context:
-      "Beyond base rates, premiums are often adjusted by: schedule credits/debits (underwriter judgment, typically +/- 25%), experience modification (based on loss history), and package credits (multi-line discount). We need to know which apply and their ranges.",
+      "Beyond base rates, premiums are often adjusted by: schedule credits/debits (underwriter judgement, typically +/- 25%), experience rating (based on 3-5 year claims history at the MGA/insurer's discretion), and package credits (multi-line discount). We need to know which apply and their ranges.",
     inputType: "free_text",
     placeholder:
-      "e.g., Schedule mod: +/- 25% at UW discretion. Experience mod: applied from NCCI for WC. Package credit: 5% for 2+ lines. Loss-free credit: 10% for 5 years clean...",
+      "e.g., Schedule mod: +/- 25% at UW discretion. Experience rating: based on 3-5 year claims experience at underwriter's assessment. Package credit: 5% for 2+ lines. Loss-free credit: 10% for 5 years clean...",
     required: true,
     order: 5,
   },
@@ -924,7 +927,7 @@ export const DECISIONS: DecisionDefinition[] = [
       "Multi-line accounts may have special pricing. We need to know if each line is priced independently and then summed, or if there's a package-level calculation that considers the combination of coverages.",
     inputType: "free_text",
     placeholder:
-      "e.g., Each line rated independently. Sum all line premiums. Apply 5% package discount if 2+ lines. Minimum combined premium: $5,000...",
+      "e.g., Each line rated independently. Sum all line premiums. Apply 5% package discount if 2+ lines. Minimum combined premium: £5,000 / €5,500...",
     required: true,
     order: 6,
   },
@@ -949,7 +952,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "What are the exact input fields the rating workbook needs, and what outputs does it produce?",
     context:
-      "We need a precise cell-level mapping: which extracted fields go into which workbook cells, and which cells contain the output premium, limits, deductibles, etc. This can be a simple list or a reference to the workbook tabs.",
+      "We need a precise cell-level mapping: which extracted fields go into which workbook cells, and which cells contain the output premium, limits, excess, etc. This can be a simple list or a reference to the workbook tabs.",
     inputType: "data_table",
     tableColumns: [
       {
@@ -971,7 +974,7 @@ export const DECISIONS: DecisionDefinition[] = [
   },
 
   // =====================================================
-  // CATEGORY 6: WORKFLOW & SOPs  (WFL-001 → WFL-009)
+  // CATEGORY 6: WORKFLOW & SOPs  (WFL-001 → WFL-010)
   // =====================================================
   {
     id: "WFL-001",
@@ -983,7 +986,7 @@ export const DECISIONS: DecisionDefinition[] = [
       "The referral workflow is critical to operational efficiency. We need to know: Who is the first reviewer? What decisions can they make (approve, decline, request more data)? Is there a second-level escalation? What premium or limit thresholds change the authority level?",
     inputType: "free_text",
     placeholder:
-      "e.g., Level 1: Senior Underwriter — can approve submissions up to $500K premium.\nLevel 2: Underwriting Manager — required for premiums over $500K or 3+ referral flags.\nLevel 3: CUO — required for any submission with adverse news findings.",
+      "e.g., Level 1: Senior Underwriter — can approve submissions up to £500K / €550K premium.\nLevel 2: Underwriting Manager — required for premiums over £500K / €550K or 3+ referral flags.\nLevel 3: CUO — required for any submission with adverse news findings.",
     required: true,
     order: 1,
   },
@@ -997,7 +1000,7 @@ export const DECISIONS: DecisionDefinition[] = [
       "When the system identifies missing information, it can generate a targeted memo to the broker. This is much better than a generic 'please provide more information.' We need to know the format, tone, and level of detail — should it explain WHY each field is needed?",
     inputType: "free_text",
     placeholder:
-      "e.g., List each missing item with:\n1. What's needed (e.g., '5-year loss runs from prior carrier')\n2. Why it's needed (e.g., 'Required for loss ratio calculation per our underwriting guidelines')\n3. Acceptable formats\n4. Response deadline\n\nTone: Professional but direct. Reference the specific submission by insured name and date.",
+      "e.g., List each missing item with:\n1. What's needed (e.g., '5-year claims history from prior insurer')\n2. Why it's needed (e.g., 'Required for loss ratio calculation per our underwriting guidelines')\n3. Acceptable formats\n4. Response deadline\n\nTone: Professional but direct. Reference the specific submission by insured name and date.",
     required: true,
     order: 2,
   },
@@ -1051,10 +1054,10 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Can a senior underwriter override an auto-decline? If so, under what circumstances and with what documentation?",
     context:
-      "Some auto-declines may have exceptions. For example, a slightly-over-threshold revenue might be acceptable for a long-standing account. We need to know if overrides are possible, who can authorize them, and what documentation is required.",
+      "Some auto-declines may have exceptions. For example, a slightly-over-threshold turnover might be acceptable for a long-standing account. We need to know if overrides are possible, who can authorise them, and what documentation is required.",
     inputType: "free_text",
     placeholder:
-      "e.g., Referral-level declines can be overridden by the Underwriting Manager with written justification.\nHard declines (blocked NAICS, sanctions matches) cannot be overridden.\nAll overrides are logged in the audit pack with the authorizer's name and rationale.",
+      "e.g., Referral-level declines can be overridden by the Underwriting Manager with written justification.\nHard declines (blocked industry code (UK SIC), OFSI/EU consolidated list sanctions matches) cannot be overridden.\nAll overrides are logged in the audit pack with the authoriser's name and rationale.",
     required: true,
     order: 5,
   },
@@ -1065,10 +1068,10 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "What standard language should be used in decline letters? Provide a template or describe the requirements.",
     context:
-      "Decline letters may have regulatory requirements depending on the state. They should be professional, specific enough that the broker understands why, but not so detailed as to create legal exposure. Some states require specific disclosures.",
+      "Decline letters must comply with FCA Treating Customers Fairly (TCF) requirements and CBI Consumer Protection Code where applicable. They should be professional, specific enough that the broker understands why, but not so detailed as to create legal exposure. Lloyd's market protocols may apply for coverholder business.",
     inputType: "free_text",
     placeholder:
-      "e.g., Template should include:\n- Insured name and submission reference\n- Specific reason for decline (not generic)\n- Reference to the relevant underwriting guideline\n- Any options for resubmission\n- Required regulatory disclaimers by state",
+      "e.g., Template should include:\n- Insured name and submission reference\n- Specific reason for decline (not generic)\n- Reference to the relevant underwriting guideline\n- Any options for resubmission\n- Required FCA/CBI regulatory notices\n- Lloyd's market wording where applicable",
     required: true,
     order: 6,
   },
@@ -1106,12 +1109,30 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "What documents and information should be included in the quote package sent to the broker?",
     context:
-      "The quote package is what the broker sees. Beyond the premium/deductible/limit, it may include: coverage summary, key exclusions, conditions, payment terms, required forms, and binding instructions. We need the complete list.",
+      "The quote package is what the broker sees. Beyond the premium/excess/limit, it may include: coverage summary, key exclusions, conditions, subjectivities (standard London market practice), payment terms, required forms, binding instructions, and binding authority reference / coverholder stamp. We need the complete list.",
     inputType: "free_text",
     placeholder:
-      "e.g., Quote package includes:\n1. Quote letter with 3 options (recommended, conservative, broader)\n2. Premium breakdown by line\n3. Coverage summary (included/excluded)\n4. Deductible schedule\n5. Key conditions and warranties\n6. Binding instructions and deadlines\n7. Required signed applications",
+      "e.g., Quote package includes:\n1. Quote letter with 3 options (recommended, conservative, broader)\n2. Premium breakdown by line\n3. Coverage summary (included/excluded)\n4. Excess schedule\n5. Key conditions, warranties, and subjectivities\n6. Binding instructions and deadlines\n7. Required signed applications\n8. Binding authority / coverholder reference",
     required: true,
     order: 9,
+  },
+  {
+    id: "WFL-010",
+    categorySlug: "workflow-sops",
+    title: "Delegated Authority Type",
+    question:
+      "What type of delegated authority arrangement does this MGA operate under?",
+    context:
+      "The delegated authority model determines reporting requirements, audit standards, and operational constraints. A Lloyd's coverholder operates under a binding authority agreement (binder) with specific terms of authority. Company market delegated authority may have different structures. Understanding the model is fundamental to system design.",
+    inputType: "single_select",
+    options: [
+      { value: "lloyds_coverholder", label: "Lloyd's Coverholder (binding authority agreement)" },
+      { value: "company_market_da", label: "Company Market Delegated Authority" },
+      { value: "both", label: "Both Lloyd's and Company Market" },
+      { value: "mga_own_capacity", label: "MGA with own capacity (not delegated)" },
+    ],
+    required: true,
+    order: 10,
   },
 
   // =====================================================
@@ -1127,13 +1148,13 @@ export const DECISIONS: DecisionDefinition[] = [
       "Adverse news screening is a key risk assessment tool. Different finding types have different severity. We need to know which categories to search for and how each affects the underwriting decision.",
     inputType: "multi_select",
     options: [
-      { value: "osha", label: "OSHA violations / workplace safety issues" },
+      { value: "hse", label: "HSE enforcement actions / workplace safety issues" },
       { value: "criminal", label: "Criminal charges or convictions" },
-      { value: "bankruptcy", label: "Bankruptcy filings" },
+      { value: "bankruptcy", label: "Insolvency / bankruptcy filings" },
       { value: "environmental", label: "Environmental violations / contamination" },
-      { value: "sanctions", label: "Government sanctions (OFAC, SDN)" },
+      { value: "sanctions", label: "Government sanctions (OFSI UK Sanctions List, EU consolidated list)" },
       { value: "lawsuits", label: "Significant lawsuits / litigation" },
-      { value: "regulatory", label: "Regulatory actions / fines" },
+      { value: "regulatory", label: "Regulatory actions / fines (FCA, CBI, etc.)" },
       { value: "fraud", label: "Insurance fraud allegations" },
       { value: "reputational", label: "Major reputational events" },
     ],
@@ -1164,7 +1185,7 @@ export const DECISIONS: DecisionDefinition[] = [
       },
       { key: "sources", label: "Sources in This Tier", type: "text", required: true },
     ],
-    placeholder: "e.g., Tier 1: Reuters, AP, Bloomberg, WSJ, SEC filings, DOJ press releases",
+    placeholder: "e.g., Tier 1: Reuters, AP, Bloomberg, FT, Companies House filings, FCA enforcement notices, SFO press releases, CBI enforcement actions",
     required: true,
     order: 2,
   },
@@ -1175,14 +1196,14 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Which entities should be screened for adverse news? Select all that apply.",
     context:
-      "Adverse news can exist at the company level, under trade names, or associated with individual principals. Broader screening catches more risks but takes longer and may produce more false positives.",
+      "Adverse news can exist at the company level, under trade names, or associated with individual directors. Broader screening catches more risks but takes longer and may produce more false positives.",
     inputType: "multi_select",
     options: [
       { value: "named_insured", label: "Named Insured (legal company name)" },
-      { value: "dba", label: "DBA / trade names" },
-      { value: "principals", label: "Principals and officers (by name)" },
+      { value: "trading_name", label: "Trading name (t/a)" },
+      { value: "principals", label: "Directors and officers (by name)" },
       { value: "locations", label: "Location addresses (environmental concerns)" },
-      { value: "fein", label: "FEIN (federal tax ID lookups)" },
+      { value: "company_reg", label: "Company Registration Number / VAT ID (Companies House, CRO Ireland)" },
     ],
     required: true,
     order: 3,
@@ -1208,7 +1229,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "For each type of adverse finding, what action should the system take?",
     context:
-      "Different findings warrant different responses. A sanctions match might be an auto-decline, while a minor OSHA violation might just be noted. We need explicit mapping from finding type and severity to underwriting action.",
+      "Different findings warrant different responses. A sanctions match might be an auto-decline, while a minor HSE enforcement notice might just be noted. We need explicit mapping from finding type and severity to underwriting action.",
     inputType: "data_table",
     tableColumns: [
       { key: "findingType", label: "Finding Type", type: "text", required: true },
@@ -1247,7 +1268,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "How far back in time should adverse news searches look? When does a finding become too old to be relevant?",
     context:
-      "A bankruptcy from 15 years ago may no longer be relevant, but an OSHA violation from last year certainly is. We need a default lookback period and any category-specific variations.",
+      "An insolvency from 15 years ago may no longer be relevant, but an HSE enforcement action from last year certainly is. We need a default lookback period and any category-specific variations.",
     inputType: "numeric",
     numericValidation: { min: 1, max: 20, step: 1, suffix: "years" },
     placeholder: "5",
@@ -1259,30 +1280,30 @@ export const DECISIONS: DecisionDefinition[] = [
     categorySlug: "adverse-news-criteria",
     title: "Principal Screening",
     question:
-      "If a company principal (not the company itself) has adverse history, does that trigger an underwriting action?",
+      "If a company director (not the company itself) has adverse history, does that trigger an underwriting action?",
     context:
-      "A company may be clean, but its CEO may have been involved in fraud at a previous company. We need to know if principal-level findings affect the underwriting decision and how they differ from company-level findings.",
+      "A company may be clean, but its director may have been involved in fraud at a previous company. We need to know if director-level findings affect the underwriting decision and how they differ from company-level findings.",
     inputType: "free_text",
     placeholder:
-      "e.g., Screen all principals with >25% ownership. Treat principal findings as: Critical = same as company findings. Medium/Low = note in file and include in referral memo but don't auto-decline...",
+      "e.g., Screen all directors and persons of significant control (>25% significant control per Companies House PSC register). Treat principal findings as: Critical = same as company findings. Medium/Low = note in file and include in referral memo but don't auto-decline...",
     required: true,
     order: 7,
   },
 
   // =====================================================
-  // CATEGORY 8: COMPLIANCE & AUDIT  (CMP-001 → CMP-008)
+  // CATEGORY 8: COMPLIANCE & AUDIT  (CMP-001 → CMP-010)
   // =====================================================
   {
     id: "CMP-001",
     categorySlug: "compliance-audit",
-    title: "NAIC AI Compliance",
+    title: "EU AI Act & FCA AI/ML Compliance",
     question:
-      "Are we subject to the NAIC Model Bulletin on AI in insurance (adopted by ~24 states)? Which states are we writing in?",
+      "Are we subject to the EU AI Act and/or FCA AI/ML guidance for the use of AI in underwriting? Which jurisdictions are we operating in?",
     context:
-      "The NAIC Model Bulletin (December 2023) requires insurers using AI in underwriting to maintain written governance policies, provide explainability, conduct bias testing, and give consumer notice. If applicable, this shapes our entire audit and documentation approach.",
+      "The EU AI Act (phased implementation 2024-2026) classifies insurance underwriting AI as high-risk (Annex III), requiring conformity assessments, transparency obligations, human oversight, and risk management systems. The FCA has published guidance on AI/ML in financial services (FS2/23) and the PRA has set expectations for model risk management (SS1/23). Lloyd's has its own expectations for AI use in delegated authority arrangements. If operating across UK and EEA, dual compliance may be required.",
     inputType: "free_text",
     placeholder:
-      "e.g., We write in 15 states. The following have adopted NAIC Model Bulletin provisions: [list]. We need full compliance with AI governance, explainability, and consumer notice requirements...",
+      "e.g., We operate as a coverholder in the UK (FCA-authorised) and Ireland (CBI-authorised), with EEA passporting. We need compliance with: EU AI Act high-risk requirements, FCA AI/ML guidance (FS2/23), PRA model risk expectations (SS1/23), and Lloyd's delegated authority AI standards...",
     required: true,
     order: 1,
   },
@@ -1293,10 +1314,10 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Do we have (or need) a formal written policy on the use of AI in underwriting?",
     context:
-      "NAIC-compliant states require a written AI governance policy covering: the role AI plays in decisions, how fairness is ensured, how decisions are explained, bias testing procedures, and consumer notification. We need to know if this exists or needs to be created.",
+      "EU AI Act requirements (Article 9 risk management, Article 13 transparency, Article 14 human oversight), FCA expectations (FS2/23), and PRA model risk management (SS1/23) all require formal governance covering: the role AI plays in decisions, how fairness is ensured, how decisions are explained, bias testing procedures, and affected person notification. We need to know if this exists or needs to be created.",
     inputType: "free_text",
     placeholder:
-      "e.g., No formal AI policy exists yet. We need to create one covering: scope of AI use, human oversight requirements, bias testing schedule, consumer notice language, and annual review process...",
+      "e.g., No formal AI policy exists yet. We need to create one covering: scope of AI use, human oversight requirements, bias testing schedule, transparency and explainability measures, and annual review process...",
     required: true,
     order: 2,
   },
@@ -1307,7 +1328,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "How many years must we retain all underwriting decision records and supporting documents?",
     context:
-      "Model Audit Rule Section 205 requires 7-year retention of all rules, versions, and evaluation records with timestamps. Some states may require longer. This drives our storage architecture and data lifecycle management.",
+      "GDPR requires retention only as long as necessary for the stated purpose, with a documented retention policy. FCA SYSC record-keeping rules require retention of records sufficient to demonstrate compliance. Lloyd's coverholder agreements typically require 7-year retention from policy expiry. Solvency II delegated acts may impose additional requirements. We need to balance these overlapping obligations.",
     inputType: "numeric",
     numericValidation: { min: 3, max: 15, step: 1, suffix: "years" },
     placeholder: "7",
@@ -1364,26 +1385,59 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "Must audit packs be encrypted at rest? If so, what encryption standard and key management approach?",
     context:
-      "Audit packs contain sensitive business and personal information. Encryption (e.g., AES-256) protects them if storage is compromised. Key management adds operational complexity. Need to balance security requirements with accessibility for auditors.",
+      "Audit packs contain sensitive business and personal information. GDPR Article 32 requires appropriate technical measures including encryption where appropriate. Encryption (e.g., AES-256) protects them if storage is compromised. Key management adds operational complexity. Need to balance security requirements with accessibility for auditors.",
     inputType: "free_text",
     placeholder:
-      "e.g., Yes, AES-256 encryption required. Keys managed through [key management approach]. Auditors receive time-limited decryption keys upon authorized request...\n\nOR: No encryption required at this stage — access control is sufficient.",
+      "e.g., Yes, AES-256 encryption required per GDPR Article 32 obligations. Keys managed through [key management approach]. Auditors receive time-limited decryption keys upon authorised request...\n\nOR: No encryption required at this stage — access control is sufficient.",
     required: true,
     order: 7,
   },
   {
     id: "CMP-008",
     categorySlug: "compliance-audit",
-    title: "Regulatory Filing Requirements",
+    title: "Regulatory Reporting Requirements",
     question:
-      "Are there state-specific filing or reporting requirements related to underwriting decisions?",
+      "What regulatory reporting obligations apply to our underwriting activities across UK, Ireland, and EEA?",
     context:
-      "Some states require filing of rate algorithms, declination reports, or AI usage disclosures. We need to know which states have specific requirements and what they entail.",
+      "Depending on jurisdictions and delegated authority type, various reporting obligations apply. The FCA requires regulatory returns for authorised firms. The CBI requires notifications for Irish-authorised activities. Lloyd's coverholders must submit performance management data (PMD) and quarterly bordereaux via DA SATS. Solvency II reporting under delegated acts may also apply.",
     inputType: "free_text",
     placeholder:
-      "e.g., California requires annual filing of rating algorithms. New York requires declination reports. Colorado AI Act requires impact assessments for high-risk AI systems...",
+      "e.g., FCA regulatory returns (annual). CBI notifications for Irish-authorised activities. Lloyd's performance management data (PMD) and quarterly bordereaux. DA SATS / DDM reporting for Lloyd's coverholder business. Solvency II reporting under delegated acts where applicable...",
     required: false,
     order: 8,
+  },
+  {
+    id: "CMP-009",
+    categorySlug: "compliance-audit",
+    title: "GDPR Data Processing Basis",
+    question:
+      "What is the lawful basis for processing personal data in underwriting submissions under GDPR?",
+    context:
+      "GDPR requires a lawful basis for processing personal data. For insurance underwriting, common bases include: legitimate interests (Article 6(1)(f)), performance of a contract (Article 6(1)(b)), or legal obligation (Article 6(1)(c)). Special category data (e.g., health data for employers' liability claims) requires an additional condition under Article 9. The ICO (UK) and DPC (Ireland) may have specific guidance for the insurance sector.",
+    inputType: "free_text",
+    placeholder:
+      "e.g., Legitimate interests (Article 6(1)(f)) for standard commercial underwriting data. For any health-related data (EL claims history), we rely on substantial public interest (Article 9(2)(g)) with appropriate safeguards per Schedule 1, Part 2 of the UK Data Protection Act 2018...",
+    required: true,
+    order: 9,
+  },
+  {
+    id: "CMP-010",
+    categorySlug: "compliance-audit",
+    title: "Sanctions List Selection",
+    question:
+      "Which sanctions lists must be checked during screening? Select all that apply.",
+    context:
+      "Post-Brexit, the UK maintains its own sanctions regime (OFSI — Office of Financial Sanctions Implementation) separate from the EU consolidated list. For business written in Ireland or the EEA, the EU consolidated sanctions list applies. Lloyd's requires compliance with both UK and applicable international sanctions. Dual-screening may be required for cross-border operations. OFAC screening may also be needed if any US-connected business is written.",
+    inputType: "multi_select",
+    options: [
+      { value: "ofsi", label: "OFSI UK Sanctions List (mandatory for UK business)" },
+      { value: "eu_consolidated", label: "EU Consolidated Sanctions List (mandatory for EEA business)" },
+      { value: "un", label: "UN Security Council Consolidated List" },
+      { value: "ofac", label: "OFAC SDN List (if US-connected business)" },
+      { value: "hmt", label: "HMT Financial Sanctions Targets (UK)" },
+    ],
+    required: true,
+    order: 10,
   },
 
   // =====================================================
@@ -1394,12 +1448,12 @@ export const DECISIONS: DecisionDefinition[] = [
     categorySlug: "quote-packaging",
     title: "Quote Option Naming",
     question:
-      "How should the three quote options be labeled? (e.g., Recommended / Conservative / Broader)",
+      "How should the three quote options be labelled? (e.g., Recommended / Conservative / Broader)",
     context:
-      "The system generates three quote options with different premium, deductible, and coverage levels. The naming affects how brokers perceive the options. 'Recommended' implies our preference; 'Option A/B/C' is neutral; descriptive names like 'Standard / Enhanced / Premium' convey value.",
+      "The system generates three quote options with different premium, excess, and coverage levels. The naming affects how brokers perceive the options. 'Recommended' implies our preference; 'Option A/B/C' is neutral; descriptive names like 'Standard / Enhanced / Premium' convey value.",
     inputType: "free_text",
     placeholder:
-      "e.g., Option A: 'Recommended' (best risk-adjusted value)\nOption B: 'Conservative' (higher deductible, lower premium)\nOption C: 'Broader' (lower deductible, higher premium, enhanced limits)",
+      "e.g., Option A: 'Recommended' (best risk-adjusted value)\nOption B: 'Conservative' (higher excess, lower premium)\nOption C: 'Broader' (lower excess, higher premium, enhanced limits)",
     required: true,
     order: 1,
   },
@@ -1408,12 +1462,12 @@ export const DECISIONS: DecisionDefinition[] = [
     categorySlug: "quote-packaging",
     title: "Recommendation Logic",
     question:
-      "What determines which of the three quote options is labeled as 'recommended'?",
+      "What determines which of the three quote options is labelled as 'recommended'?",
     context:
       "The recommendation signals our preferred option. It could be based on: the best risk-adjusted value, the option closest to the broker's requested terms, the most competitively priced, or always the middle option. We need a clear rule.",
     inputType: "free_text",
     placeholder:
-      "e.g., Recommend the option that:\n1. Matches the broker's requested limits/deductible most closely\n2. Falls within standard terms (no modifications needed)\n3. If no broker preference stated, recommend the middle option (Option A)\n\nNever recommend the broadest coverage if loss history is adverse.",
+      "e.g., Recommend the option that:\n1. Matches the broker's requested limits/excess most closely\n2. Falls within standard terms (no modifications needed)\n3. If no broker preference stated, recommend the middle option (Option A)\n\nNever recommend the broadest coverage if loss history is adverse.",
     required: true,
     order: 2,
   },
@@ -1428,15 +1482,15 @@ export const DECISIONS: DecisionDefinition[] = [
     inputType: "multi_select",
     options: [
       { value: "premium", label: "Premium breakdown by line" },
-      { value: "limits", label: "Limits and deductibles per line" },
+      { value: "limits", label: "Limits and excess per line" },
       { value: "coverage", label: "Coverage summary (inclusions)" },
       { value: "exclusions", label: "Key exclusions" },
       { value: "conditions", label: "Conditions and warranties" },
       { value: "subjectivities", label: "Subjectivities (items needed before binding)" },
-      { value: "payment", label: "Payment terms and installment options" },
+      { value: "payment", label: "Payment terms and instalment options" },
       { value: "binding", label: "Binding instructions and deadline" },
       { value: "renewal", label: "Renewal terms" },
-      { value: "endorsements", label: "Scheduled endorsements" },
+      { value: "extensions", label: "Policy extensions / endorsements" },
     ],
     required: true,
     order: 3,
@@ -1457,16 +1511,16 @@ export const DECISIONS: DecisionDefinition[] = [
   {
     id: "QPK-005",
     categorySlug: "quote-packaging",
-    title: "Limit/Deductible Variation Across Options",
+    title: "Limit/Excess Variation Across Options",
     question:
-      "How should limits and deductibles vary across the three quote options?",
+      "How should limits and excess levels vary across the three quote options?",
     context:
-      "The three options should offer meaningfully different cost/coverage trade-offs. We need to define how limits and deductibles vary — for example, Option B might have 2x the deductible of Option A but 10% lower premium.",
+      "The three options should offer meaningfully different cost/coverage trade-offs. We need to define how limits and excess vary — for example, Option B might have 2x the excess of Option A but 10% lower premium.",
     inputType: "data_table",
     tableColumns: [
       { key: "option", label: "Option", type: "text", required: true },
       { key: "limits", label: "Limits", type: "text", required: true },
-      { key: "deductible", label: "Deductible", type: "text", required: true },
+      { key: "excess", label: "Excess", type: "text", required: true },
       { key: "premiumAdjustment", label: "Premium vs. Base", type: "text", required: true },
       { key: "description", label: "Description", type: "text" },
     ],
@@ -1495,7 +1549,7 @@ export const DECISIONS: DecisionDefinition[] = [
       "Guidance notes help the broker understand our reasoning and sell the recommended option to their client. However, some MGAs prefer to let the numbers speak for themselves and handle explanations via phone/email.",
     inputType: "free_text",
     placeholder:
-      "e.g., Yes, include a brief narrative explaining:\n- Why Option A is recommended (e.g., 'Based on the applicant's clean loss history and mid-range revenue, this option offers the best value')\n- Key differences between options\n- Any risk factors the broker should discuss with the insured",
+      "e.g., Yes, include a brief narrative explaining:\n- Why Option A is recommended (e.g., 'Based on the applicant's clean claims history and mid-range turnover, this option offers the best value')\n- Key differences between options\n- Any risk factors the broker should discuss with the insured",
     required: false,
     order: 7,
   },
@@ -1509,13 +1563,13 @@ export const DECISIONS: DecisionDefinition[] = [
       "The rationale explains our recommendation in business terms. It can reference the applicant's risk profile, industry benchmarks, loss history, and how the recommended terms align with their needs. This builds broker confidence in our underwriting.",
     inputType: "free_text",
     placeholder:
-      "e.g., Rationale should reference:\n1. The applicant's loss history (favorable/unfavorable)\n2. Industry comparison (how their risk compares to class average)\n3. Specific coverage features that match their exposure profile\n4. Any modifications or credits applied and why",
+      "e.g., Rationale should reference:\n1. The applicant's loss history (favourable/unfavourable)\n2. Industry comparison (how their risk compares to class average)\n3. Specific coverage features that match their exposure profile\n4. Any modifications or credits applied and why",
     required: false,
     order: 8,
   },
 
   // =====================================================
-  // CATEGORY 10: MEASURES & SUCCESS CRITERIA  (MSC-001 → MSC-006)
+  // CATEGORY 10: MEASURES & SUCCESS CRITERIA  (MSC-001 → MSC-009)
   // =====================================================
   {
     id: "MSC-001",
@@ -1524,7 +1578,7 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "What accuracy target should we achieve for extracting key fields from submissions? (Industry benchmark: 90%+)",
     context:
-      "Field extraction accuracy is measured by comparing the system's output against manually verified 'ground truth.' The target applies to core fields like insured name, revenue, payroll, limits, and NAICS code. Higher accuracy reduces manual review but requires more sophisticated extraction.",
+      "Field extraction accuracy is measured by comparing the system's output against manually verified 'ground truth.' The target applies to core fields like insured name, turnover, payroll, limits, and UK SIC code. Higher accuracy reduces manual review but requires more sophisticated extraction.",
     inputType: "numeric",
     numericValidation: { min: 70, max: 100, step: 1, suffix: "%" },
     placeholder: "90",
@@ -1580,10 +1634,10 @@ export const DECISIONS: DecisionDefinition[] = [
     question:
       "How should we verify that the system meets audit and compliance requirements?",
     context:
-      "Verification approaches range from manual spot-checks to automated test suites that validate every audit pack. We need to know the expected verification rigor and frequency — is this annual, quarterly, or continuous?",
+      "Verification approaches range from manual spot-checks to automated test suites that validate every audit pack. We need to know the expected verification rigour and frequency — is this annual, quarterly, or continuous?",
     inputType: "free_text",
     placeholder:
-      "e.g., Quarterly audit of 10 randomly selected audit packs by compliance team. Annual third-party audit for NAIC compliance. Automated integrity checks (SHA-256 verification) on every pack at creation time...",
+      "e.g., Quarterly audit of 10 randomly selected audit packs by compliance team. Annual audit for FCA/CBI regulatory compliance. Lloyd's coverholder audit requirements. EU AI Act conformity assessment where applicable. Automated integrity checks (SHA-256 verification) on every pack at creation time...",
     required: true,
     order: 5,
   },
@@ -1600,5 +1654,56 @@ export const DECISIONS: DecisionDefinition[] = [
       "e.g., Go-live requires:\n1. 90%+ extraction accuracy on 50+ test documents\n2. 95%+ triage accuracy validated by senior UW review\n3. Successful audit pack verification by compliance\n4. UW team trained on override and referral workflows\n5. Fallback procedure documented (manual processing if system fails)\n6. 2-week parallel-run with both system and manual processing",
     required: true,
     order: 6,
+  },
+  {
+    id: "MSC-007",
+    categorySlug: "measures-success-criteria",
+    title: "Insurance Premium Tax (IPT) Configuration",
+    question:
+      "How should Insurance Premium Tax be calculated and displayed across territories?",
+    context:
+      "IPT rates vary by territory and line of business. UK standard IPT is 12%, with a higher rate of 20% for certain lines (including travel insurance). Ireland has a non-life insurance levy of 3% plus a fixed stamp duty of €1 per policy (the Insurance Compensation Fund levy was reduced from 2% to 1% as of 1 January 2026). Different EEA member states have different IPT rates. The system needs to apply the correct rate based on the risk location, not the policyholder location. IPT must be shown separately on the quote.",
+    inputType: "data_table",
+    tableColumns: [
+      { key: "territory", label: "Territory", type: "text", required: true },
+      { key: "standardRate", label: "Standard IPT Rate (%)", type: "number", required: true },
+      { key: "higherRate", label: "Higher Rate (%)", type: "number" },
+      { key: "applicableLines", label: "Lines at Higher Rate", type: "text" },
+      { key: "notes", label: "Notes", type: "text" },
+    ],
+    required: true,
+    order: 7,
+  },
+  {
+    id: "MSC-008",
+    categorySlug: "measures-success-criteria",
+    title: "DA SATS / DDM Reporting Requirements",
+    question:
+      "What delegated authority reporting standards must the system support?",
+    context:
+      "Lloyd's coverholders must submit Delegated Authority Supplementary Accounting and Tax Schedules (DA SATS) and may need to use the Delegated Data Manager (DDM) for bordereaux in prescribed formats. Company market delegated authorities may have their own reporting requirements. The system must capture and export data in the required formats. DA SATS data includes premium, claims, and tax information at individual risk level. Note: Lloyd's Europe continues to require DDM for business written with Lloyd's Insurance Company (LIC).",
+    inputType: "free_text",
+    placeholder:
+      "e.g., Lloyd's DA SATS monthly bordereaux submission required. DDM risk-level data capture from inception. Lloyd's Europe business requires DDM specifically. Company market insurer requires quarterly premium bordereaux and monthly claims bordereaux in their template...",
+    required: true,
+    order: 8,
+  },
+  {
+    id: "MSC-009",
+    categorySlug: "measures-success-criteria",
+    title: "Cross-Border Passporting Model",
+    question:
+      "How does the MGA handle cross-border business across UK, Ireland, and EEA jurisdictions?",
+    context:
+      "Post-Brexit, UK-authorised firms cannot passport into the EEA. Irish-authorised firms (registered with the CBI) can passport across the EEA via freedom of establishment or freedom to provide services, but not into the UK. Many MGAs maintain dual authorisation (FCA + CBI) to serve both markets. The system needs to understand which entity writes which territorial business, as this affects regulatory reporting, IPT, sanctions screening, and Solvency II obligations.",
+    inputType: "single_select",
+    options: [
+      { value: "uk_only", label: "UK only (FCA-authorised)" },
+      { value: "ireland_eea", label: "Ireland + EEA only (CBI-authorised, passporting)" },
+      { value: "dual_uk_ireland", label: "Dual authorisation: UK (FCA) + Ireland (CBI) with EEA passporting" },
+      { value: "lloyds_global", label: "Lloyd's coverholder (Lloyd's licences cover multiple territories)" },
+    ],
+    required: true,
+    order: 9,
   },
 ];
