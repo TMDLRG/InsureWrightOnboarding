@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo, useTransition, useRef } from "react";
+import { useState, useCallback, useMemo, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -84,26 +84,26 @@ export function DecisionDetailClient({
   const [newComment, setNewComment] = useState("");
   const [contextOpen, setContextOpen] = useState(false);
   const [reopenDialogOpen, setReopenDialogOpen] = useState(false);
-  const savedAnswerRef = useRef(initialState.answer);
-  const savedNotesRef = useRef(initialState.notes);
+  const [savedAnswer, setSavedAnswer] = useState(initialState.answer);
+  const [savedNotes, setSavedNotes] = useState(initialState.notes);
 
   const statusConfig = STATUS_CONFIG[status];
 
-  // Compute unsaved changes directly during render (no useEffect to avoid re-render loops)
+  // Compute unsaved changes directly during render
   const hasUnsavedChanges = useMemo(() => {
     const answerChanged =
-      JSON.stringify(answer) !== JSON.stringify(savedAnswerRef.current);
-    const notesChanged = notes !== savedNotesRef.current;
+      JSON.stringify(answer) !== JSON.stringify(savedAnswer);
+    const notesChanged = notes !== savedNotes;
     return answerChanged || notesChanged;
-  }, [answer, notes]);
+  }, [answer, notes, savedAnswer, savedNotes]);
 
   const handleSave = useCallback(async () => {
     startTransition(async () => {
       const result = await saveDecisionAnswer(definition.id, answer, notes);
       if (result.success) {
         setStatus("draft");
-        savedAnswerRef.current = answer;
-        savedNotesRef.current = notes;
+        setSavedAnswer(answer);
+        setSavedNotes(notes);
         toast.success("Saved as draft");
         router.refresh();
       }
@@ -117,8 +117,8 @@ export function DecisionDetailClient({
       const result = await confirmDecision(definition.id);
       if (result.success) {
         setStatus("confirmed");
-        savedAnswerRef.current = answer;
-        savedNotesRef.current = notes;
+        setSavedAnswer(answer);
+        setSavedNotes(notes);
         toast.success("Answer confirmed");
         router.refresh();
       }

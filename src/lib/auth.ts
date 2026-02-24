@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 
-const VALID_PIN = "220202";
+const VALID_PIN = process.env.AUTH_PIN || "220202";
 const COOKIE_NAME = "uw_auth";
 const COOKIE_VALUE = "neil_authenticated";
 

@@ -5,11 +5,16 @@ import path from "path";
 import { AppState, DecisionState } from "./types";
 import { DECISIONS } from "./decisions-data";
 
-// Use /tmp on Vercel (read-only filesystem), local src/data otherwise
+// DATA_DIR resolution order:
+// 1. DATA_DIR env var (Docker / custom deployments)
+// 2. /tmp on Vercel (read-only filesystem)
+// 3. src/data in local dev
 const IS_VERCEL = process.env.VERCEL === "1";
-const DATA_DIR = IS_VERCEL
-  ? "/tmp"
-  : path.join(process.cwd(), "src", "data");
+const DATA_DIR = process.env.DATA_DIR
+  ? process.env.DATA_DIR
+  : IS_VERCEL
+    ? "/tmp"
+    : path.join(process.cwd(), "src", "data");
 const STATE_FILE = path.join(DATA_DIR, "decisions-state.json");
 
 // In-memory cache for serverless warm instances

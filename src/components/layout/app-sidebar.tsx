@@ -17,6 +17,7 @@ import {
   Download,
   Activity,
   LogOut,
+  BookOpen,
 } from "lucide-react";
 import { CATEGORIES } from "@/lib/decisions-data";
 import { DecisionState } from "@/lib/types";
@@ -148,6 +149,20 @@ export function AppSidebar({ decisions, categoryCounts }: AppSidebarProps) {
                     {totalFlagged} flagged
                   </span>
                 )}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/guide"
+                className={cn(
+                  "flex items-center gap-2.5 px-2 py-2 rounded-md text-sm transition-colors",
+                  pathname === "/guide"
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                )}
+              >
+                <BookOpen className="w-4 h-4" />
+                <span className="text-xs">User Guide</span>
               </Link>
             </li>
           </ul>

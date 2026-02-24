@@ -1,0 +1,12 @@
+.git
+.gitignore
+.next
+node_modules
+npm-debug.log*
+.env.local
+.env.*.local
+coverage
+.vercel
+README.md
+*.md
+.DS_Store

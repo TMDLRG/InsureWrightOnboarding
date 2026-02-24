@@ -3,8 +3,17 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, FileJson, Download, Check } from "lucide-react";
+import {
+  FileText,
+  FileJson,
+  Download,
+  Check,
+  Upload,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 import { toast } from "sonner";
+import { publishConfig, PublishResult } from "@/actions/publish-config";
 
 interface ExportButtonsProps {
   exportData: string;
@@ -13,6 +22,10 @@ interface ExportButtonsProps {
 export function ExportButtons({ exportData }: ExportButtonsProps) {
   const [jsonDownloaded, setJsonDownloaded] = useState(false);
   const [mdDownloaded, setMdDownloaded] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [publishResult, setPublishResult] = useState<PublishResult | null>(
+    null
+  );
 
   const downloadJSON = () => {
     const blob = new Blob([exportData], { type: "application/json" });
@@ -95,8 +108,27 @@ export function ExportButtons({ exportData }: ExportButtonsProps) {
     setTimeout(() => setMdDownloaded(false), 3000);
   };
 
+  const handlePublish = async () => {
+    setPublishing(true);
+    setPublishResult(null);
+    try {
+      const result = await publishConfig();
+      setPublishResult(result);
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    } catch {
+      toast.error("Failed to publish config");
+    } finally {
+      setPublishing(false);
+      setTimeout(() => setPublishResult(null), 5000);
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <Card className="hover:border-primary/30 transition-colors">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
@@ -155,6 +187,54 @@ export function ExportButtons({ exportData }: ExportButtonsProps) {
               <>
                 <Download className="w-3.5 h-3.5 mr-1.5" />
                 Download .json
+              </>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card className="hover:border-emerald-500/30 transition-colors border-emerald-500/20">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Upload className="w-4 h-4 text-emerald-600" />
+            Publish to InsureWright
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-xs text-muted-foreground mb-3">
+            Push configuration live to the extraction engine. Changes take effect
+            within 10 seconds.
+          </p>
+          <Button
+            size="sm"
+            variant={publishResult?.success ? "default" : "outline"}
+            onClick={handlePublish}
+            disabled={publishing}
+            className={
+              publishResult?.success
+                ? "bg-emerald-600 hover:bg-emerald-700"
+                : ""
+            }
+          >
+            {publishing ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                Publishing...
+              </>
+            ) : publishResult?.success ? (
+              <>
+                <Check className="w-3.5 h-3.5 mr-1.5" />
+                Published v{publishResult.version}
+              </>
+            ) : publishResult && !publishResult.success ? (
+              <>
+                <AlertCircle className="w-3.5 h-3.5 mr-1.5" />
+                Retry
+              </>
+            ) : (
+              <>
+                <Upload className="w-3.5 h-3.5 mr-1.5" />
+                Publish
               </>
             )}
           </Button>
