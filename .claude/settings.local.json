@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c:*)",
+      "Bash(npm run build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(git rebase:*)",
+      "Bash(git checkout:*)",
+      "mcp__7f625722-65d8-4a76-b343-bcea95af31ad__deploy_to_vercel",
+      "mcp__7f625722-65d8-4a76-b343-bcea95af31ad__list_teams",
+      "mcp__7f625722-65d8-4a76-b343-bcea95af31ad__list_projects",
+      "Bash(npx --yes vercel:*)",
+      "Bash(vercel link:*)",
+      "mcp__7f625722-65d8-4a76-b343-bcea95af31ad__list_deployments",
+      "mcp__7f625722-65d8-4a76-b343-bcea95af31ad__get_project",
+      "Bash(npx vercel:*)",
+      "Bash(gh api:*)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(node -e:*)",
+      "mcp__7f625722-65d8-4a76-b343-bcea95af31ad__get_deployment",
+      "mcp__7f625722-65d8-4a76-b343-bcea95af31ad__web_fetch_vercel_url",
+      "mcp__7f625722-65d8-4a76-b343-bcea95af31ad__get_deployment_build_logs"
+    ]
+  }
+}
